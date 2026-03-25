@@ -56,9 +56,44 @@ format: dashboard:
 ---
 ```
 
-Before we make the dashboard part of the document, we need to have a code chunk that does the setup: loading necessary packages, reading in the data, etc.
+After the header and before we make the dashboard content of the document, we make a code chunk that does the setup: loading necessary packages, reading in the data, etc. The `message: false` option ensures that any messages from loading packages and running these functions will not be displayed in the dashboard when we render it.
 
+```{r}
+#| message: false
 
+library(knitr)
+library(plotly)
+library(tidyverse)
+library(dataRetrieval)
+library(lubridate)
+
+# read in data
+water.quality = read_csv("water_quality_data.csv")
+# change values of -1 x 10^6 to NA
+water.quality = water.quality %>%
+  mutate(across(where(is.numeric), ~ na_if(., -1e6))) %>%
+  rename(Time = DateTime)
+
+siteNo = "01018035" # Lowery bridge
+# For a full list of pCodes:
+# https://help.waterdata.usgs.gov/code/parameter_cd_query?fmt=rdb&inline=true&group_cd=%
+# - 00060 is discharge
+# - 00010 is stream temperature in Celcius
+pCodes = c("00060","00010")
+start.date = "2022-01-01"
+end.date = "2022-12-31"
+# load the instantaneous measurements
+streamflow = readNWISuv(siteNumbers = siteNo,
+                         parameterCd =  pCodes,
+                         startDate = start.date,
+                         endDate = end.date)
+
+# rename some columns
+streamflow = streamflow %>%
+  renameNWISColumns() %>%
+  rename(Time = dateTime) %>%
+  select(Time, Flow_Inst)
+```
 
 
 
