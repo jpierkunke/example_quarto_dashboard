@@ -1,7 +1,6 @@
 ---
 title: "Visualizing stream gauge and water quality data"
 author: "Jess Kunke and Angie Reed"
-date: "29 June 2023, updated 22 March 2026"
 format: 
   dashboard:
     theme: yeti
