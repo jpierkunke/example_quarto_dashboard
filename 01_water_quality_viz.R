@@ -1,0 +1,115 @@
+# working with Aroostook County water quality data
+
+library(knitr)
+library(plotly)
+library(tidyverse)
+library(dataRetrieval)
+library(lubridate)
+
+# read in data
+water.quality = read_csv("water_quality_data.csv")
+# change values of -1 x 10^6 to NA
+water.quality = water.quality %>%
+  mutate(across(where(is.numeric), ~ na_if(., -1e6))) %>%
+  rename(Time = DateTime)
+
+siteNo = "01018035" # Lowery bridge
+# For a full list of pCodes:
+# https://help.waterdata.usgs.gov/code/parameter_cd_query?fmt=rdb&inline=true&group_cd=%
+# - 00060 is discharge
+# - 00010 is stream temperature in Celcius
+pCodes = c("00060","00010")
+start.date = "2022-01-01"
+end.date = "2022-12-31"
+# load the instantaneous measurements
+streamflow = readNWISuv(siteNumbers = siteNo,
+                        parameterCd =  pCodes,
+                        startDate = start.date,
+                        endDate = end.date)
+
+# rename some columns
+streamflow = streamflow %>%
+  renameNWISColumns() %>%
+  rename(Time = dateTime) %>%
+  select(Time, Flow_Inst)
+
+# monthly summary statistics ----------------------------------------
+
+# summarize water quality stats in a table
+wq.stats = water.quality %>% 
+  # Create a month column in which we extract the month from the DateTime column
+  mutate(Month = month(Time)) %>%
+  # Group by month, so that we summarize exceedances by month
+  group_by(Month) %>% 
+  mutate(
+    TempAbove22.2 = (Temperature_C > 22.2), 
+    TempAbove25.6 = (Temperature_C > 25.6),
+    pHBelow7 = (pH_pH < 7),
+    pHAbove8.5 = (pH_pH > 8.5),
+    DOBelow7 = (`Optical DO_mg/l` < 7)
+  ) %>% 
+  summarize(
+    TempAbove22.2 = sum(TempAbove22.2, na.rm = TRUE),
+    TempAbove25.6 = sum(TempAbove25.6, na.rm = TRUE),
+    pHBelow7 = sum(pHBelow7, na.rm = TRUE),
+    pHAbove8.5 = sum(pHAbove8.5, na.rm = TRUE),
+    DOBelow7 = sum(DOBelow7, na.rm = TRUE)
+  )
+
+kable(wq.stats)
+
+# plot each variable in its own subfigure  --------------------------
+
+# join the two data sets
+combined = left_join(water.quality, streamflow, by = "Time")
+
+# pivot for plotting
+combined.long = pivot_longer(
+  combined,
+  cols = -c(Time),
+  names_to = "Parameter",
+  values_to = "Value"
+) |>
+  mutate(
+    # make the parameter column a factor variable
+    Parameter = Parameter |>
+      factor() |>
+      # rename the parameters for the plots
+      recode(
+        "Flow_Inst" = "Stream flow (cf/s)",
+        "Optical DO_%" = "Optical DO (%)",
+        "Optical DO_mg/l" = "Optical DO (mg/l)",
+        "pH_pH" = "pH",
+        "Specific Cond_mS/cm" = "Spec. Conductivity (mS/cm)",
+        "Temperature_C" = "Temperature (Celcius)"
+      )
+  )
+
+# plot each variable in its own facet/panel
+ggplot(combined.long, aes(x = Time, y = Value, color = Parameter)) +
+  geom_line() +
+  facet_wrap(
+    . ~ Parameter, 
+    scales = "free"
+  ) +
+  theme(legend.position = "none")
+
+# plot each variable, stacked so that dates align  ------------------
+
+ggplot(combined.long, aes(x = Time, y = Value, color = Parameter)) +
+  geom_line() +
+  xlab("Time") +
+  facet_grid(
+    Parameter ~ ., 
+    scales = "free"
+  ) +
+  theme_minimal() + # change theme
+  theme(legend.position = "none")
+
+ggsave(
+  "water_quality_plot.png",
+  width=8, 
+  height=10,
+  units = "in"
+)
+
