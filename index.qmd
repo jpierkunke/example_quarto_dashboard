@@ -114,6 +114,7 @@ ggplot(combined.long, aes(x=Time, y=Value, color=Parameter)) +
 ```{r}
 #| title: Water parameters over time, together
 #| fig-height: 10
+#| fig-width: 8
 
 # options(repr.plot.width=8, repr.plot.height=15)
 
