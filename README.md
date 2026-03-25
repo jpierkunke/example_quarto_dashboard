@@ -11,7 +11,9 @@ This demo is based on the Quarto documentation for [dashboard layout](https://qu
 * [The script](#script)
 * [Making the script into a dashboard: First pass](#first-pass)
 
-## The script {#script}
+<a name="script"/>
+
+## The script
 
 To start, look at the initial script, `01_water_quality_viz.R`.
 
@@ -30,6 +32,9 @@ To start, look at the initial script, `01_water_quality_viz.R`.
         - make the plot
         - save it to file
 
+
+
+<a name="first-pass"/>
 
 ## Making the script into a dashboard: First pass {#first-pass}
 
