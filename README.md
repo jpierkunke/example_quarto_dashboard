@@ -95,6 +95,12 @@ streamflow = streamflow %>%
   select(Time, Flow_Inst)
 ```
 
+Now we want to make the structure of the dashboard itself.  Dashboards are [laid out in rows and columns](https://quarto.org/docs/dashboards/layout.html#layout). By default, they are laid out by rows first, then columns within rows.
+
+
+
+
+
 
 
 
