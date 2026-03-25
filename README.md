@@ -15,32 +15,19 @@ This demo is based on the Quarto documentation for [dashboard layout](https://qu
 
 To start, look at the initial script, `01_water_quality_viz.R`.
 
-1. First, the script reads in a comma-separated values (csv) file of water quality data, reads in stream gauge data from USGS using the `dataRetrieval` package, and renames the variables.
-
-2. After that, the script is broken into three sections with section headings:
-
-    a. monthly summary statistics
-    
+- First, the script reads in a comma-separated values (csv) file of water quality data, reads in stream gauge data from USGS using the `dataRetrieval` package, and renames the variables.
+- After that, the script is broken into three sections with section headings:
+    - monthly summary statistics
         - compute some summary statistics about when temperature, dissolved oxygen (DO) and pH exceed certain threshholds
-        
         - make a table
-        
-    b. plot each variable in its own subfigure
-    
+    - plot each variable in its own subfigure
         - join the two data sets (data from the water quality csv file and data from dataRetrieval)
-        
         - pivot the combined dataset for plotting
-        
         - make the parameter column a factor variable
-        
         - rename the levels (parameter names) for the plots
-        
         - plot each variable in its own facet/panel
-        
-    c. plot each variable, stacked so that dates align
-    
+    - plot each variable, stacked so that dates align
         - make the plot
-        
         - save it to file
 
 
