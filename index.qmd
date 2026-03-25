@@ -1,0 +1,195 @@
+---
+title: "Visualizing stream gauge and water quality data"
+author: "Jess Kunke and Angie Reed"
+date: "29 June 2023, updated 22 March 2026"
+format: 
+  dashboard:
+    theme: yeti
+editor_options: 
+  chunk_output_type: console
+embed-resources: true
+---
+
+```{r}
+#| message: false
+
+library(knitr)
+library(plotly)
+library(tidyverse) # <- this is actually a whole suite of packages
+library(dataRetrieval)
+library(lubridate)
+
+# read in data
+water.quality <- read_csv("water_quality_data.csv")
+# change values of -1 x 10^6 to NA
+water.quality <- water.quality %>%
+  mutate(across(where(is.numeric), ~ na_if(., -1e6))) %>%
+  rename(Time=DateTime)
+
+siteNo <- "01018035" #Lowery bridge
+#For a full list of pCodes see #https://help.waterdata.usgs.gov/code/parameter_cd_query?fmt=rdb&inline=true&group_cd=%
+#00060 is discharge
+#00010 is stream temperature in Celcius
+pCodes <- c("00060","00010")
+start.date <- "2022-01-01"
+end.date <- "2022-12-31"
+# load the instantaneous measurements
+streamflow <- readNWISuv(siteNumbers = siteNo,
+                         parameterCd =  pCodes,
+                         startDate = start.date,
+                         endDate = end.date)
+
+# rename some columns
+streamflow <- streamflow %>%
+  renameNWISColumns() %>%
+  rename(Time=dateTime) %>%
+  select(Time, Flow_Inst)
+```
+
+# Introduction
+
+::: {.card}
+Today we're working on data exploration, analysis, and visualization in R, and to motivate our work we'll use the following running example.
+
+The focus of the Water Resources Program is to maintain healthy rivers and streams by monitoring part of the Meduxnekeag River Watershed located in Southern Aroostook County, Maine. This area is part of the Wolastoq (St. John River) system that flows through Canada and into the Bay of Fundy. Land uses are predominantly forestry and agricultural, with urban and commercial areas concentrated in Houlton proper. There are two point-source dischargers within the watershed located on the mainstem:
+
+1. a starch factory located 10 miles downstream from the headwaters, and
+2. a waste-water treatment plant located approximately 16 miles from the headwaters approximately 2.3 miles upstream from tribal lands.
+
+A key initial question that we want to ask is, **do water quality parameters such as temperature, pH, specific conductivity and dissolved oxygen change with stream flow?**  If so, how, and what are the implications?  We can also include local water quality standards on the plots to see how the observed values compare.
+
+To address this, we compile and examine data on these variables from two different sources: USGS for the stream flow, and water quality measurements from the Houlton Band of Maliseet Indians for site 18.9 MDX using a multiparameter sonde that collects measurements every half hour.
+
+Skills used in this dashboard:
+
+- Reading data into R from a csv file
+- Reading data into R directly from the USGS database using the [`dataRetrieval` package](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html)
+- Data manipulation with `tidyverse`: `mutate`, `group_by`, and `summarize`
+- Joining datasets
+- Visualizing multivariate time series data
+:::
+
+# Results
+    
+## Row {height=70%}
+
+```{r}
+#| title: Water parameters over time, separate
+
+# join the two data sets
+combined <- left_join(water.quality, streamflow, by="Time")
+
+# pivot for plotting
+combined.long <- pivot_longer(
+  combined,
+  cols = -c(Time),
+  names_to = "Parameter",
+  values_to = "Value"
+) |>
+  mutate(
+    # make the parameter column a factor variable
+    Parameter = Parameter |>
+      factor() |>
+      # rename the parameters for the plots
+      recode(
+        "Flow_Inst" = "Stream flow (cf/s)",
+        "Optical DO_%" = "Optical DO (%)",
+        "Optical DO_mg/l" = "Optical DO (mg/l)",
+        "pH_pH" = "pH",
+        "Specific Cond_mS/cm" = "Spec. Conductivity (mS/cm)",
+        "Temperature_C" = "Temperature (Celcius)"
+      )
+  )
+
+# plot each variable in its own facet/panel
+ggplot(combined.long, aes(x=Time, y=Value, color=Parameter)) +
+  geom_line() +
+  facet_wrap(
+    .~Parameter, 
+    scales="free"
+  ) +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| title: Water parameters over time, together
+#| fig-height: 10
+
+# options(repr.plot.width=8, repr.plot.height=15)
+
+ggplot(
+  combined.long, 
+  aes(x=Time, y=Value, color=Parameter)
+) +
+  geom_line() +
+  xlab("Time") +
+  facet_grid(
+    Parameter~., 
+    scales="free"
+  ) +
+  theme_minimal() + # change theme
+  theme(legend.position = "none")
+```
+
+
+## Row {.tabset height=30%}
+
+
+```{r}
+#| title: Monthly summary statistics
+
+# summarize water quality stats in a table
+wq.stats <- water.quality %>% 
+  # Create a month column in which we extract the month from the DateTime column
+  mutate(Month = month(Time)) %>%
+  # Group by month, so that we summarize exceedances by month
+  group_by(Month) %>% 
+  mutate(TempAbove22.2 = (Temperature_C > 22.2), 
+         TempAbove25.6 = (Temperature_C > 25.6),
+         pHBelow7 = (pH_pH < 7),
+         pHAbove8.5 = (pH_pH > 8.5),
+         DOBelow7 = (`Optical DO_mg/l` < 7)) %>% 
+  summarize(TempAbove22.2 = sum(TempAbove22.2, na.rm=TRUE),
+            TempAbove25.6 = sum(TempAbove25.6, na.rm=TRUE),
+            pHBelow7 = sum(pHBelow7, na.rm=TRUE),
+            pHAbove8.5 = sum(pHAbove8.5, na.rm=TRUE),
+            DOBelow7 = sum(DOBelow7, na.rm=TRUE))
+
+kable(wq.stats)
+```
+
+::: {.card title="About these statistics"}
+These statistics summarize how many times temperature, pH, and DO are too high or too low over the course of the year.
+
+- High water temperatures reduce dissolved oxygen levels which suffocates fish. High temperatures can also increase fish metabolic stress and trigger toxic algal blooms.
+- Low water temperatures might be too cold for species living in the water to tolerate. Low temperatures also reduce fish metabolic rates and can change invertebrate life cycles or disrupt natural food webs.
+:::
+
+
+# Summary and further resources {orientation="columns"}
+
+::: {.card title="Summary"}
+The water temperatures in this dataset were more often too high than too low. The pH was never too acidic but sometimes too basic. Less frequently, there was sometimes too little dissolved oxygen in the water.
+
+As expected, water temperature was highest in July and August. Temperature then increased sharply in September. Specific conductivity, which increases with temperature, mirrored this increase and decrease in the summer and increase in September. 
+:::
+
+::: {.card title="Further resources"}
+- [Adorable cartoons about R and tidy data]
+- [Vignette on `dataRetrieval`]
+- [Another tutorial on `dataRetrieval`]
+- [Yet another tutorial on `dataRetrieval`]
+- [Full list of parameter codes]
+
+[Adorable cartoons about R and tidy data]:
+https://allisonhorst.com/everything-else
+
+[Vignette on `dataRetrieval`]: https://owi.usgs.gov/R/dataRetrieval.html#1
+
+[Full list of parameter codes]: https://help.waterdata.usgs.gov/code/parameter_cd_query?fmt=rdb&inline=true&group_cd=%
+
+[Another tutorial on `dataRetrieval`]: https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html
+
+[Yet another tutorial on `dataRetrieval`]: http://usgs-r.github.io/dataRetrieval/articles/tutorial.html
+:::
+
