@@ -159,3 +159,9 @@ Let's say that we would like to use the first and last pages just for text. We c
 ![](images/06_markdown_chunks.png)
 
 Notice that all of the markdown chunks say `.card`, and ones which we would like to add a title to in the dashboard have `title = ...`. To see what this layout looks like, and what these pages look like once you add some text, see the final [Introduction](https://jpierkunke.github.io/example_quarto_dashboard/#introduction) and [Summary and further resources](https://jpierkunke.github.io/example_quarto_dashboard/#summary-and-further-resources) pages.
+
+There are two more changes we can make to obtain the final dashboard shown in `index.qmd`:
+
+- We can use [tabsets]() to add a description to the summary statistics table without taking up more room on the page. In `index.qmd`, I did this by changing the row header from `## Row {height=30%}` to `## Row {.tabset height=30%}` and by adding a markdown card after the summary statistics code chunk for the text I wanted to put in another tab. See `index.qmd` for details.
+- Recall that the default setting is that rows are primary, and columns are made within rows. We can change this orientation default using `{orientation="columns"}` in the level-two section heading of a particular page, or by adding it to the YAML header at the top of the document if we want to change the defaul for our whole document. In `index.qmd` here, I changed this setting just for the summary and further resources page by changing the section heading from `# Summary and further resources` to `# Summary and further resources {orientation="columns"}`.
+
