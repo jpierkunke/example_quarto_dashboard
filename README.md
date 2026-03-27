@@ -120,6 +120,9 @@ To make our initial dashboard, then, we can copy and paste the code chunks that 
 - Adding the option `embed-resources: true` ensures that your dashboard will be self-contained; without this, a separate folder is generated to contain images and other things that are included in your dashboard.
 - Adding titles to the code chunks using the `title` YAML option allows you to add titles to the cards in your dashboard.
 
+If you render `02_initial_dashboard.qmd`, you should get a dashboard that looks like this:
+
+![](images/04_initial_dashboard.png)
 
 
 
