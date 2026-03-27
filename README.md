@@ -19,16 +19,16 @@ To start, look at the initial script, `01_water_quality_viz.R`.
 
 - First, the script reads in a comma-separated values (csv) file of water quality data, reads in stream gauge data from USGS using the `dataRetrieval` package, and renames the variables.
 - After that, the script is broken into three sections with section headings:
-    - monthly summary statistics
+    - monthly summary statistics (Table)
         - compute some summary statistics about when temperature, dissolved oxygen (DO) and pH exceed certain threshholds
         - make a table
-    - plot each variable in its own subfigure
+    - plot each variable in its own subfigure (Plot 1)
         - join the two data sets (data from the water quality csv file and data from dataRetrieval)
         - pivot the combined dataset for plotting
         - make the parameter column a factor variable
         - rename the levels (parameter names) for the plots
         - plot each variable in its own facet/panel
-    - plot each variable, stacked so that dates align
+    - plot each variable, stacked so that dates align (Plot 2)
         - make the plot
         - save it to file
 
@@ -114,7 +114,11 @@ The setup shown below would create two rows, the first row taking up the first 7
 
 ![](images/03_initial_dash_skeleton.png)
 
+To make our initial dashboard, then, we can copy and paste the code chunks that are relevant for each of these cards. The first card (the first blank code chunk shown in the screenshot above) should have the code for Plot 1, the second card should have the code for Plot 2, and the third card in its own row should have the code to make the table of summary statistics. Copy and paste the relevant code from the script, and you should be most of the way to recreating `02_initial_dashboard.qmd`. The few additional touches in `02_initial_dashboard.qmd`:
 
+- You can add a theme (`theme: yeti`). Note that the theme has to be nested under `dashboard`, which means you'll need to put `dashboard` on a separate line with a colon after it. Carefully compare and contrast the YAML header at the top of the screenshot above with the YAML header in `02_initial_dashboard.qmd`.
+- Adding the option `embed-resources: true` ensures that your dashboard will be self-contained; without this, a separate folder is generated to contain images and other things that are included in your dashboard.
+- Adding titles to the code chunks using the `title` YAML option allows you to add titles to the cards in your dashboard.
 
 
 
