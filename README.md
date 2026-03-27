@@ -52,7 +52,7 @@ Let's make a simple header to start:
 ---
 title: "Visualizing stream gauge and water quality data"
 author: "Jess Kunke and Angie Reed"
-format: dashboard:
+format: dashboard
 ---
 ```
 
