@@ -131,7 +131,7 @@ If you render `02_initial_dashboard.qmd`, you should get a dashboard that looks 
 
 ## Making the script into the final dashboard
 
-So far, we have a dashboard with a single page. If the dashboard we ultimately want to make has multiple pages, we can add those with level-1 headers. Here is the layout for a dashboard with three pages:
+So far, we have a dashboard with a single page. If the dashboard we ultimately want to make has [multiple pages](https://quarto.org/docs/dashboards/layout.html#pages), we can add those with level-1 headers. Here is the layout for a dashboard with three pages:
 
 ```
 ---
@@ -154,7 +154,7 @@ The initial setup code chunk should be located between the YAML header and the f
 
 ![](images/05_pages_with_results.png)
 
-Let's say that we would like to use the first and last pages just for text. We can do that using markdown chunks, like this:
+Let's say that we would like to use the first and last pages just for text. We can do that using [markdown chunks](https://quarto.org/docs/dashboards/layout.html#cards), like this:
 
 ![](images/06_markdown_chunks.png)
 
