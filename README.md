@@ -115,7 +115,7 @@ The setup shown below would create two rows, the first row taking up the first 7
 
 ![](images/03_initial_dash_skeleton.png)
 
-To make our initial dashboard, then, we can copy and paste the code chunks that are relevant for each of these cards. The first card (the first blank code chunk shown in the screenshot above) should have the code for Plot 1, the second card should have the code for Plot 2, and the third card in its own row should have the code to make the table of summary statistics. Copy and paste the relevant code from the script, and you should be most of the way to recreating `02_initial_dashboard.qmd`. Notice that I did not copy and paste the code for saving the plot to file, since that might make sense for the script but probably isn't relevant for the dashboard.
+To make our initial dashboard, then, we can open the script again and copy and paste the code chunks that are relevant for each of these cards. The first card (the first blank code chunk shown in the screenshot above) should have the code for Plot 1, the second card should have the code for Plot 2, and the third card in its own row should have the code to make the table of summary statistics. Copy and paste the relevant code from the script, and you should be most of the way to recreating `02_initial_dashboard.qmd`. Notice that in `02_initial_dashboard.qmd`, I did not include the code for saving the plot to file, since that might make sense for the script but probably isn't relevant for the dashboard.
 
 The few additional touches in `02_initial_dashboard.qmd`:
 
