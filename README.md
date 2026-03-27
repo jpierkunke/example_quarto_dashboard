@@ -8,13 +8,13 @@ This demo shows how to adapt a script (`01_water_quality_viz.R`) into a Quarto d
 This demo is based on the Quarto documentation for [dashboard layout](https://quarto.org/docs/dashboards/layout.html).
 
 # Table of Contents
-* [The script](#script)
-* [Making the script into a dashboard: First pass](#first-pass)
+* [The initial script](#script)
+* [The first steps to turning this script into a dashboard](#first-steps)
 * [Making the script into the final dashboard](#final-dash)
 
 <a name="script"/>
 
-## The script
+## The initial script
 
 To start, look at the initial script, `01_water_quality_viz.R`.
 
@@ -35,9 +35,9 @@ To start, look at the initial script, `01_water_quality_viz.R`.
 
 
 
-<a name="first-pass"/>
+<a name="first-steps"/>
 
-## Making the script into a dashboard: First pass
+## The first steps to turning this script into a dashboard
 
 Let's start by trying to make a dashboard with the two plots side by side, and the table of summary statistics below.
 
