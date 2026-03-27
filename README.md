@@ -158,4 +158,4 @@ Let's say that we would like to use the first and last pages just for text. We c
 
 ![](images/06_markdown_chunks.png)
 
-
+Notice that all of the markdown chunks say `.card`, and ones which we would like to add a title to in the dashboard have `title = ...`. To see what this layout looks like, and what these pages look like once you add some text, see the final [Introduction](https://jpierkunke.github.io/example_quarto_dashboard/#introduction) and [Summary and further resources](https://jpierkunke.github.io/example_quarto_dashboard/#summary-and-further-resources) pages.
