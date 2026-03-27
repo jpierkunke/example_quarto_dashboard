@@ -4,8 +4,6 @@ author: "Jess Kunke and Angie Reed"
 format: 
   dashboard:
     theme: yeti
-editor_options: 
-  chunk_output_type: console
 embed-resources: true
 ---
 

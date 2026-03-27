@@ -131,6 +131,27 @@ If you render `02_initial_dashboard.qmd`, you should get a dashboard that looks 
 
 ## Making the script into the final dashboard
 
+So far, we have a dashboard with a single page. If the dashboard we ultimately want to make has multiple pages, we can add those with level-1 headers. Here is the layout for a dashboard with three pages:
+
+```
+---
+title: "Visualizing stream gauge and water quality data"
+author: "Jess Kunke and Angie Reed"
+format: 
+  dashboard:
+    theme: yeti
+embed-resources: true
+---
+
+# Introduction
+
+# Results
+
+# Summary and further resources
+```
+
+The initial setup code chunk should be located between the YAML header and the first section, `# Introduction`. All the markdown and code that we had before for the Results page should go after `# Results` and before the final summary section.
 
 
-     
+
+
