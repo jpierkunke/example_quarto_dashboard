@@ -10,6 +10,7 @@ This demo is based on the Quarto documentation for [dashboard layout](https://qu
 # Table of Contents
 * [The script](#script)
 * [Making the script into a dashboard: First pass](#first-pass)
+* [Making the script into the final dashboard](#final-dash)
 
 <a name="script"/>
 
@@ -36,7 +37,7 @@ To start, look at the initial script, `01_water_quality_viz.R`.
 
 <a name="first-pass"/>
 
-## Making the script into a dashboard: First pass {#first-pass}
+## Making the script into a dashboard: First pass
 
 Let's start by trying to make a dashboard with the two plots side by side, and the table of summary statistics below.
 
@@ -123,6 +124,10 @@ To make our initial dashboard, then, we can copy and paste the code chunks that 
 If you render `02_initial_dashboard.qmd`, you should get a dashboard that looks like this:
 
 ![](images/04_initial_dashboard.png)
+
+<a name="final-dash"/>
+
+## Making the script into the final dashboard
 
 
 
