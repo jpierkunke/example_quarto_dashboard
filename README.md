@@ -150,8 +150,12 @@ embed-resources: true
 # Summary and further resources
 ```
 
-The initial setup code chunk should be located between the YAML header and the first section, `# Introduction`. All the markdown and code that we had before for the Results page should go after `# Results` and before the final summary section.
+The initial setup code chunk should be located between the YAML header and the first section, `# Introduction`. All the markdown and code that we had before for the Results page should go after `# Results` and before the final summary section:
 
+![](images/05_pages_with_results.png)
 
+Let's say that we would like to use the first and last pages just for text. We can do that using markdown chunks, like this:
+
+![](images/06_markdown_chunks.png)
 
 
